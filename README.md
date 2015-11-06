@@ -7,8 +7,10 @@ Tested: Under Python 2.7.10, with nose ($ pip install nose)
 
 To run unittest:
 
-1)  $ python setup.py install
+1) $ cd <LogAnalyzer-dir> 
 
-2)  $ cd tests 
+2) $ python setup.py install
 
-3)  $ nosetests -vs
+3) $ cd tests 
+
+4) $ nosetests -vs
