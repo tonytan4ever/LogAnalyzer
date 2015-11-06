@@ -7,6 +7,13 @@ import datetime
 
 
 class LogfileReader(object):
+    """Class for reading log file into a in memory list
+
+    The constructor takes a log_file's pathm, and a default
+    delimiter of ' '.
+
+    The load_entries method will set the loaed flag
+    """
 
     # These are index number of the field in each log entry
     DATE = 0
@@ -25,9 +32,9 @@ class LogfileReader(object):
 
     def load_entries(self):
         '''Load all entries into a in memory list. '''
-        with open(self.log_file_path, 'rb') as csvfile:
+        with open(self.log_file_path, 'rb') as log_file:
             # Using quote as a quotechar as MSG field is quoted
-            reader = csv.reader(csvfile, delimiter=self.field_delimiter,
+            reader = csv.reader(log_file, delimiter=self.field_delimiter,
                                 quotechar='\'')
             # could/need use a generator in case the file is so large.
             for row in reader:

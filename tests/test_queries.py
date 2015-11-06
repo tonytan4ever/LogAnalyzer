@@ -1,5 +1,5 @@
 '''
-Test logfile reader
+Test querier
 '''
 import datetime
 import unittest
@@ -10,12 +10,13 @@ from log_analyzer import logfile_reader, queries
 class TestQuries(unittest.TestCase):
 
     def setUp(self):
+        super(TestQuries, self).setUp()
         self.reader_positive = (
             logfile_reader.LogfileReader('./test_log_file.txt')
         )
 
     def test_query_by_log_level(self):
-        # Here the test is a little data-driver, could use ddt to do that
+        # Here the test is a little data-driven, could use ddt to do that
         res = queries.get_all_lines_by_log_level(self.reader_positive, "DEBUG")
         self.assertTrue(len(res) > 0)
         for r in res:
@@ -54,15 +55,19 @@ class TestQuries(unittest.TestCase):
             datetime.date(2012, 9, 13), datetime.date(2012, 9, 14))
         res = queries.get_all_lines_by_date_range(self.reader_positive,
                                                   from_date,
-                                                  end_date,
-                                                  False)
+                                                  end_date)
+        res_2 = queries.get_all_lines_by_date_range(self.reader_positive,
+                                                    from_date,
+                                                    end_date,
+                                                    False)
         self.assertTrue(len(res) > 0)
-        for r in res:
+        self.assertTrue(len(res_2) > 0)
+        for r in res_2:
             self.assertTrue(r['date'] >= from_date and r['date'] <= end_date)
 
         # No matching test
         from_date, end_date = (
-            datetime.date(2015, 9, 13), datetime.date(2015, 9, 14))
+            datetime.date(2015, 7, 13), datetime.date(2015, 9, 14))
         res = queries.get_all_lines_by_date_range(self.reader_positive,
                                                   from_date,
                                                   end_date)
