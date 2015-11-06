@@ -7,4 +7,6 @@ To run unittest:
 
 1)  $ python setup.py install
 
-2)  $ cd tests & nosetests -vs
+2)  $ cd tests 
+
+3)  $ nosetests -vs
