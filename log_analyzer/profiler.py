@@ -4,8 +4,9 @@ import timeit
 class Profiler(object):
     """A Class profiling function exeuction times.
 
-    The construction of take a num_samples parameter to let
-    the decorated function run num_samples times
+    In constructor, self.ns will act as a cache to store all
+    the run information for each function run, and self.time_format_string
+    will be used as a 
 
     It will keep track of the min, max and the average function
     execution time, and print a result as:
@@ -18,36 +19,43 @@ class Profiler(object):
     """
 
     def __init__(self, num_samples=10):
-        self.num_samples = num_samples
         self.ns = {}
+        self.time_format_string = "%.2f"
 
     def __call__(self, f):
         self.ns[f.__name__] = {
-            'NumSamples': self.num_samples,
             'execution_time_samples': [],
         }
 
         def inner(*args, **kwargs):
-            for _ in range(self.num_samples):
-                start = timeit.default_timer()
-                f(*args, **kwargs)
-                end = timeit.default_timer()
-                elapsed = end-start
-                self.ns[f.__name__]['execution_time_samples'].append(elapsed)
-            # print out statistics
-            function_staticstic_entry = self.ns[f.__name__]
-            print("Function: %s" % f.__name__)
-            print("NumSamples: %s" % function_staticstic_entry['NumSamples'])
-            print("Min: %.2f secs" %
-                  min(function_staticstic_entry['execution_time_samples']))
-            print("Max: %.2f secs" %
-                  max(function_staticstic_entry['execution_time_samples']))
-            print("Average: %.2f secs" %
-                  # this is the average
-                  (float(sum(
-                        function_staticstic_entry['execution_time_samples'])) /
-                        len(function_staticstic_entry['execution_time_samples']
-                            ))
-                  )
+            start = timeit.default_timer()
+            f(*args, **kwargs)
+            end = timeit.default_timer()
+            elapsed = end-start
+            self.ns[f.__name__]['execution_time_samples'].append(elapsed)
 
         return inner
+
+    def _print_report(self):
+        # print out statistics
+        for func_name in self.ns:
+            function_staticstic_entry = self.ns[func_name]
+            print("Function: %s" % func_name)
+            print("NumSamples: %s" %
+                  len(function_staticstic_entry['execution_time_samples']))
+            print(("Min: %s secs" % self.time_format_string) %
+                  min(function_staticstic_entry['execution_time_samples']))
+            print(("Max: %s secs" % self.time_format_string) %
+                  max(function_staticstic_entry['execution_time_samples']))
+            print(("Average: %s secs" % self.time_format_string) %
+                  # this is the average
+                  (float(
+                      sum(
+                          function_staticstic_entry['execution_time_samples']))
+                   / len(function_staticstic_entry['execution_time_samples']))
+                  )
+            print "==========================================================="
+            print "==========================================================="
+
+    def __del__(self):
+        self._print_report()
