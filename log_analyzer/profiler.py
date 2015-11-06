@@ -6,7 +6,7 @@ class Profiler(object):
 
     In constructor, self.ns will act as a cache to store all
     the run information for each function run, and self.time_format_string
-    will be used as a 
+    will be used as a result execution time format
 
     It will keep track of the min, max and the average function
     execution time, and print a result as:
